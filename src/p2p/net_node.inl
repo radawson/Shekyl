@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project, ClockworX
 //
 // All rights reserved.
 //
@@ -65,7 +65,7 @@
 
 #define NET_MAKE_IP(b1,b2,b3,b4)  ((LPARAM)(((DWORD)(b1)<<24)+((DWORD)(b2)<<16)+((DWORD)(b3)<<8)+((DWORD)(b4))))
 
-#define MIN_WANTED_SEED_NODES 12
+#define MIN_WANTED_SEED_NODES 2 // For testing purposes. This should increase later
 
 namespace nodetool
 {
@@ -386,8 +386,8 @@ namespace nodetool
       full_addrs.insert("SeedNode2.circlex.cx:11021");
       full_addrs.insert("SeedNode3.circlex.cx:11021");
       full_addrs.insert("SeedNode4.circlex.cx:11021");
-      full_addrs.insert("161.67.132.39:11021");
-      full_addrs.insert("198.74.231.92:11021");
+      // full_addrs.insert("161.67.132.39:11021");
+      // full_addrs.insert("198.74.231.92:11021");
       // full_addrs.insert("195.154.123.123:11022");
       // full_addrs.insert("212.83.172.165:11022");
     }
@@ -1373,7 +1373,7 @@ namespace nodetool
     }
     rsp.connections_count = m_net_server.get_config_object().get_connections_count();
     rsp.incoming_connections_count = rsp.connections_count - get_outgoing_connections_count();
-    rsp.version = MONERO_VERSION_FULL;
+    rsp.version = CRYPTOCOIN_VERSION_FULL;
     rsp.os_version = tools::get_os_version_string();
     m_payload_handler.get_stat_info(rsp.payload_info);
     return 1;
