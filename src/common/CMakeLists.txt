@@ -69,9 +69,9 @@ set(common_private_headers
   threadpool.h
   updates.h)
 
-monero_private_headers(common
+shekyl_private_headers(common
   ${common_private_headers})
-monero_add_library(common
+shekyl_add_library(common
   ${common_sources}
   ${common_headers}
   ${common_private_headers}
