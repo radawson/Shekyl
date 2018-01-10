@@ -78,7 +78,6 @@
 
 // TODO:
 #include "net/network_throttle-detail.hpp"
-#include "cryptonote_core/cryptonote_core.h"
 
 #undef SHEKYL_DEFAULT_LOG_CATEGORY
 #define SHEKYL_DEFAULT_LOG_CATEGORY "net.p2p"
