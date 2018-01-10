@@ -51,8 +51,8 @@ using namespace epee;
 #include "rpc/rpc_args.h"
 #include "rpc/core_rpc_server_commands_defs.h"
 
-#undef SHEKYL_DEFAULT_LOG_CATEGORY
-#define SHEKYL_DEFAULT_LOG_CATEGORY "wallet.rpc"
+#undef MONERO_DEFAULT_LOG_CATEGORY
+#define MONERO_DEFAULT_LOG_CATEGORY "wallet.rpc"
 
 namespace
 {
@@ -62,7 +62,7 @@ namespace
   const command_line::arg_descriptor<std::string> arg_wallet_dir = {"wallet-dir", "Directory for newly created wallets"};
   const command_line::arg_descriptor<bool> arg_prompt_for_password = {"prompt-for-password", "Prompts for password when not provided", false};
 
-  constexpr const char default_rpc_username[] = "shekyl";
+  constexpr const char default_rpc_username[] = "monero";
 
   boost::optional<tools::password_container> password_prompter(const char *prompt, bool verify)
   {
@@ -89,8 +89,6 @@ namespace tools
   //------------------------------------------------------------------------------------------------------------------------------
   wallet_rpc_server::~wallet_rpc_server()
   {
-    if (m_wallet)
-      delete m_wallet;
   }
   //------------------------------------------------------------------------------------------------------------------------------
   void wallet_rpc_server::set_wallet(wallet2 *cr)
@@ -200,7 +198,7 @@ namespace tools
           string_encoding::base64_encode(rand_128bit.data(), rand_128bit.size())
         );
 
-        std::string temp = "shekyl-wallet-rpc." + bind_port + ".login";
+        std::string temp = "monero-wallet-rpc." + bind_port + ".login";
         rpc_login_file = tools::private_file::create(temp);
         if (!rpc_login_file.handle())
         {
@@ -231,9 +229,8 @@ namespace tools
     m_http_client.set_server(walvars->get_daemon_address(), walvars->get_daemon_login());
 
     m_net_server.set_threads_prefix("RPC");
-    auto rng = [](size_t len, uint8_t *ptr) { return crypto::rand(len, ptr); };
     return epee::http_server_impl_base<wallet_rpc_server, connection_context>::init(
-      rng, std::move(bind_port), std::move(rpc_config->bind_ip), std::move(rpc_config->access_control_origins), std::move(http_login)
+      std::move(bind_port), std::move(rpc_config->bind_ip), std::move(rpc_config->access_control_origins), std::move(http_login)
     );
   }
   //------------------------------------------------------------------------------------------------------------------------------
@@ -588,7 +585,7 @@ namespace tools
           }
           if (addresses.empty())
           {
-            er.message = std::string("No Shekyl address found at ") + url;
+            er.message = std::string("No Monero address found at ") + url;
             return {};
           }
           return addresses[0];
@@ -1381,7 +1378,7 @@ namespace tools
         }
         if (addresses.empty())
         {
-          er.message = std::string("No Shekyl address found at ") + url;
+          er.message = std::string("No Monero address found at ") + url;
           return {};
         }
         return addresses[0];
@@ -2019,7 +2016,7 @@ namespace tools
         }
         if (addresses.empty())
         {
-          er.message = std::string("No Shekyl address found at ") + url;
+          er.message = std::string("No Monero address found at ") + url;
           return {};
         }
         return addresses[0];
@@ -2777,12 +2774,12 @@ int main(int argc, char** argv) {
 
   const auto vm = wallet_args::main(
     argc, argv,
-    "shekyl-wallet-rpc [--wallet-file=<file>|--generate-from-json=<file>|--wallet-dir=<directory>] [--rpc-bind-port=<port>]",
-    tools::wallet_rpc_server::tr("This is the RPC shekyl wallet. It needs to connect to a shekyl\ndaemon to work correctly."),
+    "monero-wallet-rpc [--wallet-file=<file>|--generate-from-json=<file>|--wallet-dir=<directory>] [--rpc-bind-port=<port>]",
+    tools::wallet_rpc_server::tr("This is the RPC monero wallet. It needs to connect to a monero\ndaemon to work correctly."),
     desc_params,
     po::positional_options_description(),
     [](const std::string &s, bool emphasis){ epee::set_console_color(emphasis ? epee::console_color_white : epee::console_color_default, true); std::cout << s << std::endl; if (emphasis) epee::reset_console_color(); },
-    "shekyl-wallet-rpc.log",
+    "monero-wallet-rpc.log",
     true
   );
   if (!vm)

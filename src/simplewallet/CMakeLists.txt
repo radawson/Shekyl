@@ -34,9 +34,9 @@ set(simplewallet_headers)
 set(simplewallet_private_headers
   simplewallet.h)
 
-shekyl_private_headers(simplewallet
+monero_private_headers(simplewallet
   ${simplewallet_private_headers})
-shekyl_add_executable(simplewallet
+monero_add_executable(simplewallet
   ${simplewallet_sources}
   ${simplewallet_headers}
   ${simplewallet_private_headers})

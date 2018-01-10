@@ -34,10 +34,10 @@ set(multisig_headers)
 set(multisig_private_headers
   multisig.h)
 
-shekyl_private_headers(multisig
+monero_private_headers(multisig
   ${multisig_private_headers})
 
-shekyl_add_library(multisig
+monero_add_library(multisig
   ${multisig_sources}
   ${multisig_headers}
   ${multisig_private_headers})

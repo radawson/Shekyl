@@ -49,15 +49,14 @@ set(mnemonics_private_headers
   esperanto.h
   lojban.h)
 
-shekyl_private_headers(mnemonics
+monero_private_headers(mnemonics
   ${mnemonics_private_headers})
-shekyl_add_library(mnemonics
+monero_add_library(mnemonics
   ${mnemonics_sources}
   ${mnemonics_headers}
   ${mnemonics_private_headers})
 target_link_libraries(mnemonics
   PUBLIC
-    epee
     easylogging
     ${Boost_SYSTEM_LIBRARY}
   PRIVATE

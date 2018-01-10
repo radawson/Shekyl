@@ -54,4 +54,3 @@ if(${ARCH_WIDTH} EQUAL 32)
   target_compile_definitions(lmdb
     PUBLIC -DMDB_VL32)
 endif()
-set_property(TARGET lmdb APPEND PROPERTY COMPILE_FLAGS "-fPIC")
