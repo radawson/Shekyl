@@ -44,7 +44,7 @@ cmake_minimum_required(VERSION 2.8.7)
 project(shekyl)
 
 function (die msg)
-  if (NOT WIN32)
+  if (NOT _WIN32)
     string(ASCII 27 Esc)
     set(ColourReset "${Esc}[m")
     set(BoldRed     "${Esc}[1;31m")
@@ -123,7 +123,7 @@ if(ARCH_ID STREQUAL "ppc64le")
   set(PPC64LE 1)
 endif()
 
-if(WIN32 OR ARM)
+if(_WIN32 OR ARM)
   set(OPT_FLAGS_RELEASE "-O2")
 else()
   set(OPT_FLAGS_RELEASE "-Ofast")
@@ -530,7 +530,7 @@ else()
   add_cxx_flag_if_supported(-fstack-protector-strong CXX_SECURITY_FLAGS)
 
   # linker
-  if (NOT WIN32)
+  if (NOT _WIN32)
     # Windows binaries die on startup with PIE
     add_linker_flag_if_supported(-pie LD_SECURITY_FLAGS)
   endif()
@@ -548,7 +548,7 @@ else()
   endif()
 
   # some windows linker bits
-  if (WIN32)
+  if (_WIN32)
     add_linker_flag_if_supported(-Wl,--dynamicbase LD_SECURITY_FLAGS)
     add_linker_flag_if_supported(-Wl,--nxcompat LD_SECURITY_FLAGS)
   endif()

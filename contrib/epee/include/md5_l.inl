@@ -60,9 +60,6 @@ documentation and/or software.
 
 #ifdef _WIN32
 # include <winsock2.h>
-#endif
-#ifdef _WIN64
-# include <winsock2.h>
 #else
 # include <arpa/inet.h>
 #endif
