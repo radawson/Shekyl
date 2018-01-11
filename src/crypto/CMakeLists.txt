@@ -68,14 +68,15 @@ set(crypto_private_headers
   skein.h
   skein_port.h)
 
-monero_private_headers(cncrypto
+shekyl_private_headers(cncrypto
   ${crypto_private_headers})
-monero_add_library(cncrypto
+shekyl_add_library(cncrypto
   ${crypto_sources}
   ${crypto_headers}
   ${crypto_private_headers})
 target_link_libraries(cncrypto
   PUBLIC
+    epee
     ${Boost_SYSTEM_LIBRARY}
   PRIVATE
     ${EXTRA_LIBRARIES})

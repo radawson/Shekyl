@@ -41,8 +41,8 @@
 #include "profile_tools.h"
 #include "ringct/rctOps.h"
 
-#undef MONERO_DEFAULT_LOG_CATEGORY
-#define MONERO_DEFAULT_LOG_CATEGORY "blockchain.db.lmdb"
+#undef SHEKYL_DEFAULT_LOG_CATEGORY
+#define SHEKYL_DEFAULT_LOG_CATEGORY "blockchain.db.lmdb"
 
 
 #if defined(__i386) || defined(__x86_64)
@@ -1621,7 +1621,7 @@ void BlockchainLMDB::remove_txpool_tx(const crypto::hash& txid)
   }
 }
 
-txpool_tx_meta_t BlockchainLMDB::get_txpool_tx_meta(const crypto::hash& txid) const
+bool BlockchainLMDB::get_txpool_tx_meta(const crypto::hash& txid, txpool_tx_meta_t &meta) const
 {
   LOG_PRINT_L3("BlockchainLMDB::" << __func__);
   check_open();
@@ -1632,12 +1632,14 @@ txpool_tx_meta_t BlockchainLMDB::get_txpool_tx_meta(const crypto::hash& txid) co
   MDB_val k = {sizeof(txid), (void *)&txid};
   MDB_val v;
   auto result = mdb_cursor_get(m_cur_txpool_meta, &k, &v, MDB_SET);
+  if (result == MDB_NOTFOUND)
+      return false;
   if (result != 0)
       throw1(DB_ERROR(lmdb_error("Error finding txpool tx meta: ", result).c_str()));
 
-  const txpool_tx_meta_t meta = *(const txpool_tx_meta_t*)v.mv_data;
+  meta = *(const txpool_tx_meta_t*)v.mv_data;
   TXN_POSTFIX_RDONLY();
-  return meta;
+  return true;
 }
 
 bool BlockchainLMDB::get_txpool_tx_blob(const crypto::hash& txid, cryptonote::blobdata &bd) const
@@ -3214,7 +3216,7 @@ void BlockchainLMDB::fixup()
     ptr = (char *)k.mv_data; \
     ptr[sizeof(name)-2] = 's'
 
-#define LOGIF(y)    if (ELPP->vRegistry()->allowed(y, MONERO_DEFAULT_LOG_CATEGORY))
+#define LOGIF(y)    if (ELPP->vRegistry()->allowed(y, SHEKYL_DEFAULT_LOG_CATEGORY))
 
 void BlockchainLMDB::migrate_0_1()
 {

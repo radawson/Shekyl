@@ -34,7 +34,7 @@ using namespace epee;
 #include "cryptonote_basic_impl.h"
 #include "string_tools.h"
 #include "serialization/binary_utils.h"
-#include "serialization/vector.h"
+#include "serialization/container.h"
 #include "cryptonote_format_utils.h"
 #include "cryptonote_config.h"
 #include "misc_language.h"
@@ -43,8 +43,8 @@ using namespace epee;
 #include "common/int-util.h"
 #include "common/dns_utils.h"
 
-#undef MONERO_DEFAULT_LOG_CATEGORY
-#define MONERO_DEFAULT_LOG_CATEGORY "cn"
+#undef SHEKYL_DEFAULT_LOG_CATEGORY
+#define SHEKYL_DEFAULT_LOG_CATEGORY "cn"
 
 namespace cryptonote {
 

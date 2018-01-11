@@ -35,7 +35,6 @@ set(common_sources
   download.cpp
   util.cpp
   i18n.cpp
-  memwipe.c
   password.cpp
   perf_timer.cpp
   threadpool.cpp
@@ -64,19 +63,19 @@ set(common_private_headers
   util.h
   varint.h
   i18n.h
-  memwipe.h
   password.h
   perf_timer.h
   stack_trace.h
   threadpool.h
   updates.h)
 
-monero_private_headers(common
+shekyl_private_headers(common
   ${common_private_headers})
-monero_add_library(common
+shekyl_add_library(common
   ${common_sources}
   ${common_headers}
-  ${common_private_headers})
+  ${common_private_headers}
+  DEPENDS generate_translations_header)
 target_link_libraries(common
   PUBLIC
     epee
@@ -91,10 +90,6 @@ target_link_libraries(common
   PRIVATE
     ${OPENSSL_LIBRARIES}
     ${EXTRA_LIBRARIES})
-
-if(HAVE_C11)
-SET_PROPERTY(SOURCE memwipe.c PROPERTY COMPILE_FLAGS -std=c11)
-endif()
 
 #monero_install_headers(common
 #  ${common_headers})
