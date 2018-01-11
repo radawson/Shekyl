@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2018, The Monero Project, CircleX
+# Copyright (c) 2014-2018, The Monero Project, ClockworX
 #
 # All rights reserved.
 #
@@ -34,7 +34,7 @@ endif()
 
 cmake_minimum_required(VERSION 2.8.7)
 
-project(shekyl)
+project(monero)
 
 function (die msg)
   if (NOT WIN32)

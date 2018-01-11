@@ -37,14 +37,14 @@ RUN apt-get update && \
 COPY --from=builder /src/build/release/bin/* /usr/local/bin/
 
 # Contains the blockchain
-VOLUME /root/.shekyl
+VOLUME /root/.bitmonero
 
 # Generate your wallet via accessing the container and run:
 # cd /wallet
-# shekyl-wallet-cli
+# monero-wallet-cli
 VOLUME /wallet
 
 EXPOSE 11021
 EXPOSE 11029
 
-ENTRYPOINT ["shekyld", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=11021", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=11029", "--non-interactive", "--confirm-external-bind"] 
+ENTRYPOINT ["monerod", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=11021", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=11029", "--non-interactive", "--confirm-external-bind"] 
