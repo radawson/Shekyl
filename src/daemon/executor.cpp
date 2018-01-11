@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, ClockworX
+// Copyright (c) 2014-2018, The Monero Project, CircleX
 // 
 // All rights reserved.
 // 
@@ -58,7 +58,7 @@ namespace daemonize
       boost::program_options::variables_map const & vm
     )
   {
-    LOG_PRINT_L0("Monero '" << CRYPTOCOIN_RELEASE_NAME << "' (v" << CRYPTOCOIN_VERSION_FULL << ") Daemonised");
+    LOG_PRINT_L0("Shekyl '" << CRYPTOCOIN_RELEASE_NAME << "' (v" << CRYPTOCOIN_VERSION_FULL << ") Daemonised");
     return t_daemon{vm};
   }
 

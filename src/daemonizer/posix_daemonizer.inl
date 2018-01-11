@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, ClockworX
+// Copyright (c) 2014-2018, The Monero Project, CircleX
 // 
 // All rights reserved.
 // 
@@ -100,7 +100,7 @@ namespace daemonizer
     }
     else
     {
-      //LOG_PRINT_L0("Monero '" << CRYPTOCOIN_RELEASE_NAME << "' (v" << CRYPTOCOIN_VERSION_FULL);
+      //LOG_PRINT_L0("Shekyl '" << CRYPTOCOIN_RELEASE_NAME << "' (v" << CRYPTOCOIN_VERSION_FULL);
       return executor.run_interactive(vm);
     }
   }

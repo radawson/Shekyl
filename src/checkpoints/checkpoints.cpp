@@ -213,17 +213,17 @@ namespace cryptonote
   {
     std::vector<std::string> records;
 
-    // All four MoneroPulse domains have DNSSEC on and valid
-    static const std::vector<std::string> dns_urls = { "checkpoints.moneropulse.se"
-						     , "checkpoints.moneropulse.org"
-						     , "checkpoints.moneropulse.net"
-						     , "checkpoints.moneropulse.co"
+    // All four MoneroPulse domains have DNSSEC on and valid  <- is this a qestion or a statement?
+    static const std::vector<std::string> dns_urls = { "checkpoints.shekyl.net"
+						     , "checkpoints.shekyl.org"
+						     , "checkpoints.shekyl.com"
+						     // , "checkpoints.moneropulse.co"
     };
 
-    static const std::vector<std::string> testnet_dns_urls = { "testpoints.moneropulse.se"
-							     , "testpoints.moneropulse.org"
-							     , "testpoints.moneropulse.net"
-							     , "testpoints.moneropulse.co"
+    static const std::vector<std::string> testnet_dns_urls = { "testpoints.shekyl.net"
+							     , "testpoints.shekyl.org"
+							     , "testpoints.shekyl.com"
+							   //  , "testpoints.moneropulse.co"
     };
 
     if (!tools::dns_utils::load_txt_records_from_dns(records, testnet ? testnet_dns_urls : dns_urls))

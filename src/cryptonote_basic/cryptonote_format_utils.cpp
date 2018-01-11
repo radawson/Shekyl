@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project, CircleX LLC
 // 
 // All rights reserved.
 // 
@@ -730,15 +730,15 @@ namespace cryptonote
     switch (std::atomic_load(&default_decimal_point))
     {
       case 12:
-        return "monero";
+        return "shekyl";
       case 9:
-        return "millinero";
+        return "millishekyl";
       case 6:
-        return "micronero";
+        return "microshekyl";
       case 3:
-        return "nanonero";
+        return "nanoshekyl";
       case 0:
-        return "piconero";
+        return "picoshekyl";
       default:
         ASSERT_MES_AND_THROW("Invalid decimal point specification: " << default_decimal_point);
     }

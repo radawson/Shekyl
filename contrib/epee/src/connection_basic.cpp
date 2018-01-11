@@ -162,7 +162,7 @@ connection_basic::connection_basic(boost::asio::io_service& io_service, std::ato
 	try { boost::system::error_code e; remote_addr_str = socket_.remote_endpoint(e).address().to_string(); } catch(...){} ;
 
 	_note("Spawned connection p2p#"<<mI->m_peer_number<<" to " << remote_addr_str << " currently we have sockets count:" << m_ref_sock_count);
-	//boost::filesystem::create_directories("log/dr-monero/net/");
+	//boost::filesystem::create_directories("log/dr-shekyl/net/");
 }
 
 connection_basic::~connection_basic() noexcept(false) {
