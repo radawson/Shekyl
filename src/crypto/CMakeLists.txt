@@ -68,9 +68,9 @@ set(crypto_private_headers
   skein.h
   skein_port.h)
 
-shekyl_private_headers(cncrypto
+monero_private_headers(cncrypto
   ${crypto_private_headers})
-shekyl_add_library(cncrypto
+monero_add_library(cncrypto
   ${crypto_sources}
   ${crypto_headers}
   ${crypto_private_headers})

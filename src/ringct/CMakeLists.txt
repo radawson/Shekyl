@@ -41,9 +41,9 @@ set(ringct_private_headers
   rctTypes.h
   bulletproofs.h)
 
-shekyl_private_headers(ringct
+monero_private_headers(ringct
   ${crypto_private_headers})
-shekyl_add_library(ringct
+monero_add_library(ringct
   ${ringct_sources}
   ${ringct_headers}
   ${ringct_private_headers})

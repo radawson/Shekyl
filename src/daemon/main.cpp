@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, CircleX
+// Copyright (c) 2014-2018, The Monero Project, ClockworX
 //
 // All rights reserved.
 //
@@ -50,8 +50,8 @@
 #include "common/stack_trace.h"
 #endif // STACK_TRACE
 
-#undef SHEKYL_DEFAULT_LOG_CATEGORY
-#define SHEKYL_DEFAULT_LOG_CATEGORY "daemon"
+#undef MONERO_DEFAULT_LOG_CATEGORY
+#define MONERO_DEFAULT_LOG_CATEGORY "daemon"
 
 namespace po = boost::program_options;
 namespace bf = boost::filesystem;

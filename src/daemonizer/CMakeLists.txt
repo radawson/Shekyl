@@ -54,9 +54,9 @@ else()
   )
 endif()
 
-shekyl_private_headers(daemonizer
+monero_private_headers(daemonizer
   ${daemonizer_private_headers})
-shekyl_add_library(daemonizer
+monero_add_library(daemonizer
   ${daemonizer_sources}
   ${daemonizer_headers}
   ${daemonizer_private_headers})

@@ -29,7 +29,7 @@
 set(gen_multisig_sources
   gen_multisig.cpp)
 
-shekyl_add_executable(gen_multisig
+monero_add_executable(gen_multisig
   ${gen_multisig_sources})
 target_link_libraries(gen_multisig
   PRIVATE

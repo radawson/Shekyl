@@ -36,8 +36,8 @@
 #include "net/http_server_cp2.h"
 #include "net/http_server_handlers_map2.h"
 
-#undef SHEKYL_DEFAULT_LOG_CATEGORY
-#define SHEKYL_DEFAULT_LOG_CATEGORY "net.http"
+#undef MONERO_DEFAULT_LOG_CATEGORY
+#define MONERO_DEFAULT_LOG_CATEGORY "net.http"
 
 namespace epee
 {

@@ -30,8 +30,8 @@
 #include <boost/utility/value_init.hpp>
 #include "net/levin_base.h"
 
-#undef SHEKYL_DEFAULT_LOG_CATEGORY
-#define SHEKYL_DEFAULT_LOG_CATEGORY "net"
+#undef MONERO_DEFAULT_LOG_CATEGORY
+#define MONERO_DEFAULT_LOG_CATEGORY "net"
 
 namespace epee
 {
