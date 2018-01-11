@@ -47,10 +47,10 @@
 using namespace std;
 using namespace cryptonote;
 
-#undef SHEKYL_DEFAULT_LOG_CATEGORY
-#define SHEKYL_DEFAULT_LOG_CATEGORY "WalletAPI"
+#undef MONERO_DEFAULT_LOG_CATEGORY
+#define MONERO_DEFAULT_LOG_CATEGORY "WalletAPI"
 
-namespace Shekyl {
+namespace Monero {
 
 namespace {
     // copy-pasted from simplewallet
@@ -1806,4 +1806,4 @@ bool WalletImpl::useForkRules(uint8_t version, int64_t early_blocks) const
 
 } // namespace
 
-namespace Bitshekyl = Shekyl;
+namespace Bitmonero = Monero;

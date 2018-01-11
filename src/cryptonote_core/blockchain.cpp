@@ -56,8 +56,8 @@
 #include "blocks/blocks.h"
 #endif
 
-#undef SHEKYL_DEFAULT_LOG_CATEGORY
-#define SHEKYL_DEFAULT_LOG_CATEGORY "blockchain"
+#undef MONERO_DEFAULT_LOG_CATEGORY
+#define MONERO_DEFAULT_LOG_CATEGORY "blockchain"
 
 #define FIND_BLOCKCHAIN_SUPPLEMENT_MAX_SIZE (100*1024*1024) // 100 MB
 
@@ -4198,9 +4198,9 @@ uint64_t Blockchain::get_txpool_tx_count(bool include_unrelayed_txes) const
   return m_db->get_txpool_tx_count(include_unrelayed_txes);
 }
 
-bool Blockchain::get_txpool_tx_meta(const crypto::hash& txid, txpool_tx_meta_t &meta) const
+txpool_tx_meta_t Blockchain::get_txpool_tx_meta(const crypto::hash& txid) const
 {
-  return m_db->get_txpool_tx_meta(txid, meta);
+  return m_db->get_txpool_tx_meta(txid);
 }
 
 bool Blockchain::get_txpool_tx_blob(const crypto::hash& txid, cryptonote::blobdata &bd) const

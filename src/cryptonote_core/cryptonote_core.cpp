@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, CircleX
+// Copyright (c) 2014-2018, The Monero Project, ClockworX
 //
 // All rights reserved.
 //
@@ -55,8 +55,8 @@ using namespace epee;
 #include "ringct/rctSigs.h"
 #include "version.h"
 
-#undef SHEKYL_DEFAULT_LOG_CATEGORY
-#define SHEKYL_DEFAULT_LOG_CATEGORY "cn"
+#undef MONERO_DEFAULT_LOG_CATEGORY
+#define MONERO_DEFAULT_LOG_CATEGORY "cn"
 
 DISABLE_VS_WARNINGS(4355)
 

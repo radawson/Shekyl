@@ -39,7 +39,6 @@
 #include "wipeable_string.h"
 using namespace epee;
 
-#include "crypto/crypto.h"
 #include "util.h"
 #include "memwipe.h"
 #include "cryptonote_config.h"

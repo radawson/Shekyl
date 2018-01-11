@@ -41,7 +41,7 @@
 
 #include "common/pod-class.h"
 #include "common/util.h"
-#include "memwipe.h"
+#include "common/memwipe.h"
 #include "generic-ops.h"
 #include "hex.h"
 #include "span.h"

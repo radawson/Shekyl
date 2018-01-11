@@ -29,9 +29,9 @@
 set(blocksdat "")
 if(PER_BLOCK_CHECKPOINT)
   if(APPLE)
-    add_custom_command(OUTPUT blocksdat.o MAIN_DEPENDENCY ../blocks/checkpoints.dat COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && touch stub.c && ${CMAKE_C_COMPILER} -o stub.o -c stub.c COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && ${CMAKE_LINKER} ${LD_RAW_FLAGS} -r -sectcreate __DATA __blocks_dat ../blocks/checkpoints.dat -o ${CMAKE_CURRENT_BINARY_DIR}/blocksdat.o stub.o && rm -f stub.*)
+    add_custom_command(OUTPUT blocksdat.o MAIN_DEPENDENCY ../blocks/checkpoints.dat COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && touch stub.c && ${CMAKE_C_COMPILER} -o stub.o -c stub.c COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && ${CMAKE_LINKER} -r -sectcreate __DATA __blocks_dat ../blocks/checkpoints.dat -o ${CMAKE_CURRENT_BINARY_DIR}/blocksdat.o stub.o && rm -f stub.*)
   else()
-    add_custom_command(OUTPUT blocksdat.o MAIN_DEPENDENCY ../blocks/checkpoints.dat COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && cp ../blocks/checkpoints.dat blocks.dat && ${CMAKE_LINKER} ${LD_RAW_FLAGS} -r -b binary -o ${CMAKE_CURRENT_BINARY_DIR}/blocksdat.o blocks.dat && rm -f blocks.dat)
+    add_custom_command(OUTPUT blocksdat.o MAIN_DEPENDENCY ../blocks/checkpoints.dat COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && cp ../blocks/checkpoints.dat blocks.dat && ${CMAKE_LINKER} -r -b binary -o ${CMAKE_CURRENT_BINARY_DIR}/blocksdat.o blocks.dat && rm -f blocks.dat)
   endif()
   set(blocksdat "blocksdat.o")
 endif()
@@ -48,7 +48,7 @@ set(blockchain_import_private_headers
   bootstrap_serialization.h
   )
 
-shekyl_private_headers(blockchain_import
+monero_private_headers(blockchain_import
 	  ${blockchain_import_private_headers})
 
 set(blockchain_export_sources
@@ -63,11 +63,11 @@ set(blockchain_export_private_headers
   bootstrap_serialization.h
   )
 
-shekyl_private_headers(blockchain_export
+monero_private_headers(blockchain_export
 	  ${blockchain_export_private_headers})
 
 
-shekyl_add_executable(blockchain_import
+monero_add_executable(blockchain_import
   ${blockchain_import_sources}
   ${blockchain_import_private_headers}
   ${blocksdat})
@@ -95,7 +95,7 @@ set_property(TARGET blockchain_import
 	OUTPUT_NAME "shekyl-blockchain-import")
 install(TARGETS blockchain_import DESTINATION bin)
 
-shekyl_add_executable(blockchain_export
+monero_add_executable(blockchain_export
   ${blockchain_export_sources}
   ${blockchain_export_private_headers})
 

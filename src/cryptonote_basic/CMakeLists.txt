@@ -57,9 +57,9 @@ set(cryptonote_basic_private_headers
   tx_extra.h
   verification_context.h)
 
-shekyl_private_headers(cryptonote_basic
+monero_private_headers(cryptonote_basic
   ${cryptonote_basic_private_headers})
-shekyl_add_library(cryptonote_basic
+monero_add_library(cryptonote_basic
   ${cryptonote_basic_sources}
   ${cryptonote_basic_headers}
   ${cryptonote_basic_private_headers})
