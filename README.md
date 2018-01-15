@@ -241,16 +241,16 @@ cmake -G "Visual Studio 12 Win64" ..
 And then do Build.
 Good luck!
 
-# Monero
+# shekyl
 
-Copyright (c) 2014-2017 The Monero Project.   
+Copyright (c) 2014-2017 The shekyl Project.   
 
 ## Development resources
 
 - Web: [getmonero.org](https://getmonero.org)
 - Forum: [forum.getmonero.org](https://forum.getmonero.org)
 - Mail: [dev@getmonero.org](mailto:dev@getmonero.org)
-- GitHub: [https://github.com/monero-project/monero](https://github.com/monero-project/monero)
+- GitHub: [https://github.com/radawson/shekyl](https://github.com/radawson/shekyl)
 - IRC: [#monero-dev on Freenode](http://webchat.freenode.net/?randomnick=1&channels=%23monero-dev&prompt=1&uio=d4)
 
 ## Vulnerability response
