@@ -87,7 +87,7 @@ using namespace cryptonote;
 // arbitrary, used to generate different hashes from the same input
 #define CHACHA8_KEY_TAIL 0x8c
 
-#define UNSIGNED_TX_PREFIX CRYPTONOTE_NAME + " unsigned tx set\004"
+#define UNSIGNED_TX_PREFIX "Shekyl unsigned tx set\004"
 #define SIGNED_TX_PREFIX "Shekyl signed tx set\004"
 #define MULTISIG_UNSIGNED_TX_PREFIX "Shekyl multisig unsigned tx set\001"
 

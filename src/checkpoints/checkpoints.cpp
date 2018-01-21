@@ -217,13 +217,13 @@ namespace cryptonote
     static const std::vector<std::string> dns_urls = { "checkpoints.shekyl.net"
 						     , "checkpoints.shekyl.org"
 						     , "checkpoints.shekyl.com"
-						     , "checkpoints.shekyl.co"
+						     , "checkpoints.shekyl.biz"
     };
 
     static const std::vector<std::string> testnet_dns_urls = { "testpoints.shekyl.net"
 							     , "testpoints.shekyl.org"
 							     , "testpoints.shekyl.com"
-							     , "testpoints.shekyl.co"
+							     , "testpoints.shekyl.biz"
     };
 
     if (!tools::dns_utils::load_txt_records_from_dns(records, testnet ? testnet_dns_urls : dns_urls))

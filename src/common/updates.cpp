@@ -49,7 +49,7 @@ namespace tools
 		"updates.shekyl.net"
 		, "updates.shekyl.org"
 		, "updates.shekyl.com"
-		, "updates.shekyl.co"
+		, "updates.shekyl.biz"
     };
 
     if (!tools::dns_utils::load_txt_records_from_dns(records, dns_urls))
