@@ -92,7 +92,7 @@ endif()
 
 set_property(TARGET blockchain_import
 	PROPERTY
-	OUTPUT_NAME "shekyl-blockchain-import")
+	OUTPUT_NAME "monero-blockchain-import")
 install(TARGETS blockchain_import DESTINATION bin)
 
 monero_add_executable(blockchain_export
@@ -114,6 +114,6 @@ target_link_libraries(blockchain_export
 
 set_property(TARGET blockchain_export
 	PROPERTY
-	OUTPUT_NAME "shekyl-blockchain-export")
+	OUTPUT_NAME "monero-blockchain-export")
 install(TARGETS blockchain_export DESTINATION bin)
 

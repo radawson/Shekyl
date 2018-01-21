@@ -102,9 +102,9 @@ target_link_libraries(daemon
     ${Boost_SYSTEM_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${ZMQ_LIB}
-    ${Readline_LIBRARY}
+    ${GNU_READLINE_LIBRARY}
     ${EXTRA_LIBRARIES})
 set_property(TARGET daemon
   PROPERTY
-    OUTPUT_NAME "shekyld")
+    OUTPUT_NAME "monerod")
 install(TARGETS daemon DESTINATION bin)

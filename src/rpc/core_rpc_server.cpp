@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, ClockworX
+// Copyright (c) 2014-2017, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -1641,7 +1641,7 @@ namespace cryptonote
       res.status = "Error checking for updates";
       return true;
     }
-    if (tools::vercmp(version.c_str(), CRYPTOCOIN_VERSION) <= 0)
+    if (tools::vercmp(version.c_str(), MONERO_VERSION) <= 0)
     {
       res.update = false;
       res.status = CORE_RPC_STATUS_OK;
