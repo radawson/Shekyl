@@ -149,9 +149,15 @@ POP_WARNINGS
         else if (boost::regex_match (from, boost::regex("\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\dZ")))
         {
           // Convert to unix timestamp
+		#ifdef HAVE_STRPTIME
           std::tm tm = {};
           std::istringstream ss(from);
           if (ss >> std::get_time(&tm, "%Y-%m-%dT%H:%M:%S"))
+		#else
+			std::tm tm = {};
+			std::istringstream ss(from);
+			if (ss >> std::get_time(&tm, "%Y-%m-%dT%H:%M:%S"))
+		#endif
             to = std::mktime(&tm);
         } else
           ASSERT_AND_THROW_WRONG_CONVERSION();
