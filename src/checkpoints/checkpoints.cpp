@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, CircleX
+// Copyright (c) 2014-2018, The Monero Project, CircleX LLC
 //
 // All rights reserved.
 //
@@ -217,13 +217,13 @@ namespace cryptonote
     static const std::vector<std::string> dns_urls = { "checkpoints.shekyl.net"
 						     , "checkpoints.shekyl.org"
 						     , "checkpoints.shekyl.com"
-						     // , "checkpoints.moneropulse.co"
+						    // , "checkpoints.shekyl.net"
     };
 
     static const std::vector<std::string> testnet_dns_urls = { "testpoints.shekyl.net"
 							     , "testpoints.shekyl.org"
 							     , "testpoints.shekyl.com"
-							   //  , "testpoints.moneropulse.co"
+							   //  , "testpoints.shekyl.net"
     };
 
     if (!tools::dns_utils::load_txt_records_from_dns(records, testnet ? testnet_dns_urls : dns_urls))

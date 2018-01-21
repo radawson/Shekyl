@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, CircleX
+// Copyright (c) 2014-2018, The Monero Project, CircleX LLC
 //
 // All rights reserved.
 //
@@ -383,9 +383,9 @@ namespace nodetool
     else
     {
       full_addrs.insert("SeedNode1.circlex.cx:11021");
-      full_addrs.insert("SeedNode2.circlex.cx:11021");
-      full_addrs.insert("SeedNode3.circlex.cx:11021");
-      full_addrs.insert("SeedNode4.circlex.cx:11021");
+      full_addrs.insert("45.77.66.189:11021");
+      full_addrs.insert("207.246.123.128:11021");
+      full_addrs.insert("45.77.209.142:11021");
       // full_addrs.insert("161.67.132.39:11021");
       // full_addrs.insert("198.74.231.92:11021");
       // full_addrs.insert("195.154.123.123:11022");
