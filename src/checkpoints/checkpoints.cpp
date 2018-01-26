@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, CircleX LLC
+// Copyright (c) 2014-2017, The Monero Project, 2018 CircleX LLC
 //
 // All rights reserved.
 //
@@ -213,7 +213,7 @@ namespace cryptonote
   {
     std::vector<std::string> records;
 
-    // All four MoneroPulse domains have DNSSEC on and valid  <- is this a question or a statement?
+    // All four ShekylPulse domains have DNSSEC on and valid  <- is this a question or a statement?
     static const std::vector<std::string> dns_urls = { "checkpoints.shekyl.net"
 						     , "checkpoints.shekyl.org"
 						     , "checkpoints.shekyl.com"

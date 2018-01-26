@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2017, The Monero Project, 2018 CircleX LLC
 // 
 // All rights reserved.
 // 
@@ -33,6 +33,8 @@
 #ifdef __GLIBC__
 #include <gnu/libc-version.h>
 #endif
+
+#include "unbound.h"
 
 #include "include_base_utils.h"
 #include "file_io_utils.h"
@@ -521,6 +523,18 @@ std::string get_nix_version_display_string()
     return std::error_code(code, std::system_category());
   }
 
+   static bool unbound_built_with_threads()
+  {
+    ub_ctx *ctx = ub_ctx_create();
+    if (!ctx) return false; // cheat a bit, should not happen unless OOM
+    ub_ctx_zone_add(ctx, "monero", "unbound"); // this calls ub_ctx_finalize first, then errors out with UB_SYNTAX
+    // if no threads, bails out early with UB_NOERROR, otherwise fails with UB_AFTERFINAL id already finalized
+    bool with_threads = ub_ctx_async(ctx, 1) != 0; // UB_AFTERFINAL is not defined in public headers, check any error
+    ub_ctx_delete(ctx);
+    MINFO("libunbound was built " << (with_threads ? "with" : "without") << " threads");
+    return with_threads;
+  }
+  
   bool sanitize_locale()
   {
     // boost::filesystem throws for "invalid" locales, such as en_US.UTF-8, or kjsdkfs,
@@ -562,6 +576,9 @@ std::string get_nix_version_display_string()
 #else
     OPENSSL_init_ssl(0, NULL);
 #endif
+
+if (!unbound_built_with_threads())
+      MCLOG_RED(el::Level::Warning, "global", "libunbound was not built with threads enabled - crashes may occur");
 
     return true;
   }

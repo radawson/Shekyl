@@ -44,7 +44,7 @@ namespace tools
 
     MDEBUG("Checking updates for " << buildtag << " " << software);
 
-    // All four MoneroPulse domains have DNSSEC on and valid
+    // All four ShekylPulse domains have DNSSEC on and valid
     static const std::vector<std::string> dns_urls = {
 		"updates.shekyl.net"
 		, "updates.shekyl.org"
