@@ -35,7 +35,7 @@ include(CheckCXXCompilerFlag)
 include(CheckLinkerFlag)
 include(CheckLibraryExists)
 
- Get the current working branch
+#Get the current working branch
  execute_process(
   COMMAND git rev-parse --abbrev-ref HEAD
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -43,7 +43,7 @@ include(CheckLibraryExists)
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
- Get the latest abbreviated commit hash of the working branch
+#Get the latest abbreviated commit hash of the working branch
 execute_process(
   COMMAND git log -1 --format=%h
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
