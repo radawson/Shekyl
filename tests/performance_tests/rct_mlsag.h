@@ -1,4 +1,4 @@
-// Copyright (c) 2017, The Monero Project
+// Copyright (c) 2014-2017, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -26,45 +26,62 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-// Most of this file is originally copyright (c) 2017 Raymond Chen, Microsoft
-// This algorithm is adapted from Raymond Chen's code:
-// https://blogs.msdn.microsoft.com/oldnewthing/20170109-00/?p=95145
+// Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
 
 #pragma once
 
-#include <vector>
-#include <functional>
-#include "misc_log_ex.h"
+#include "ringct/rctSigs.h"
+#include "cryptonote_basic/cryptonote_basic.h"
 
-namespace tools
+#include "single_tx_test_base.h"
+
+template<size_t inputs, size_t ring_size, bool ver>
+class test_ringct_mlsag : public single_tx_test_base
 {
+public:
+  static const size_t cols = ring_size;
+  static const size_t rows = inputs;
+  static const size_t loop_count = 100;
 
-template<typename F>
-void apply_permutation(std::vector<size_t> permutation, const F &swap)
-{
-  //sanity check
-  for (size_t n = 0; n < permutation.size(); ++n)
-    CHECK_AND_ASSERT_THROW_MES(std::find(permutation.begin(), permutation.end(), n) != permutation.end(), "Bad permutation");
-
-  for (size_t i = 0; i < permutation.size(); ++i)
+  bool init()
   {
-    size_t current = i;
-    while (i != permutation[current])
+    if (!single_tx_test_base::init())
+      return false;
+
+    rct::keyV xtmp = rct::skvGen(rows);
+    rct::keyM xm = rct::keyMInit(rows, cols);// = [[None]*N] #just used to generate test public keys
+    sk = rct::skvGen(rows);
+    P  = rct::keyMInit(rows, cols);// = keyM[[None]*N] #stores the public keys;
+    ind = 2;
+    for (size_t j = 0 ; j < rows ; j++)
     {
-      size_t next = permutation[current];
-      swap(current, next);
-      permutation[current] = current;
-      current = next;
+        for (size_t i = 0 ; i < cols ; i++)
+        {
+            xm[i][j] = rct::skGen();
+            P[i][j] = rct::scalarmultBase(xm[i][j]);
+        }
     }
-    permutation[current] = current;
+    for (size_t j = 0 ; j < rows ; j++)
+    {
+        sk[j] = xm[ind][j];
+    }
+    IIccss = MLSAG_Gen(rct::identity(), P, sk, NULL, NULL, ind, rows);
+
+    return true;
   }
-}
 
-template<typename T>
-void apply_permutation(const std::vector<size_t> &permutation, std::vector<T> &v)
-{
-  CHECK_AND_ASSERT_THROW_MES(permutation.size() == v.size(), "Mismatched vector sizes");
-  apply_permutation(permutation, [&v](size_t i0, size_t i1){ std::swap(v[i0], v[i1]); });
-}
+  bool test()
+  {
+    if (ver)
+      MLSAG_Ver(rct::identity(), P, IIccss, rows);
+    else
+      MLSAG_Gen(rct::identity(), P, sk, NULL, NULL, ind, rows);
+    return true;
+  }
 
-}
+private:
+  rct::keyV sk;
+  rct::keyM P;
+  size_t ind;
+  rct::mgSig IIccss;
+};

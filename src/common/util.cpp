@@ -454,8 +454,7 @@ std::string get_nix_version_display_string()
     // namespace fs = boost::filesystem;
     // Windows < Vista: C:\Documents and Settings\Username\Application Data\CRYPTONOTE_NAME
     // Windows >= Vista: C:\Users\Username\AppData\Roaming\CRYPTONOTE_NAME
-    // Mac: ~/Library/Application Support/CRYPTONOTE_NAME
-    // Unix: ~/.CRYPTONOTE_NAME
+    // Unix & Mac: ~/.CRYPTONOTE_NAME
     std::string config_folder;
 
 #ifdef WIN32
@@ -467,14 +466,7 @@ std::string get_nix_version_display_string()
       pathRet = "/";
     else
       pathRet = pszHome;
-#ifdef MAC_OSX
-    // Mac
-    pathRet /= "Library/Application Support";
-    config_folder =  (pathRet + "/" + CRYPTONOTE_NAME);
-#else
-    // Unix
     config_folder = (pathRet + "/." + CRYPTONOTE_NAME);
-#endif
 #endif
 
     return config_folder;
@@ -523,7 +515,7 @@ std::string get_nix_version_display_string()
     return std::error_code(code, std::system_category());
   }
 
-   static bool unbound_built_with_threads()
+  static bool unbound_built_with_threads()
   {
     ub_ctx *ctx = ub_ctx_create();
     if (!ctx) return false; // cheat a bit, should not happen unless OOM
@@ -534,7 +526,7 @@ std::string get_nix_version_display_string()
     MINFO("libunbound was built " << (with_threads ? "with" : "without") << " threads");
     return with_threads;
   }
-  
+
   bool sanitize_locale()
   {
     // boost::filesystem throws for "invalid" locales, such as en_US.UTF-8, or kjsdkfs,
@@ -577,7 +569,7 @@ std::string get_nix_version_display_string()
     OPENSSL_init_ssl(0, NULL);
 #endif
 
-if (!unbound_built_with_threads())
+    if (!unbound_built_with_threads())
       MCLOG_RED(el::Level::Warning, "global", "libunbound was not built with threads enabled - crashes may occur");
 
     return true;
