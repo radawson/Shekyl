@@ -43,7 +43,7 @@
 using namespace epee;
 
 #include "util.h"
-#include "memwipe.h"
+// #include "memwipe.h" commented out for testing. This could be causing a circular reference
 #include "cryptonote_config.h"
 #include "net/http_client.h"                        // epee::net_utils::...
 
