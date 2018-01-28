@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -44,6 +44,7 @@
 #include "cryptonote_basic/cryptonote_basic_impl.h"
 #include "wallet/wallet2.h"
 #include "console_handler.h"
+#include "common/i18n.h"
 #include "common/password.h"
 #include "crypto/crypto.h"  // for definition of crypto::secret_key
 
@@ -128,7 +129,9 @@ namespace cryptonote
     bool set_merge_destinations(const std::vector<std::string> &args = std::vector<std::string>());
     bool set_confirm_backlog(const std::vector<std::string> &args = std::vector<std::string>());
     bool set_confirm_backlog_threshold(const std::vector<std::string> &args = std::vector<std::string>());
+    bool set_confirm_export_overwrite(const std::vector<std::string> &args = std::vector<std::string>());
     bool set_refresh_from_block_height(const std::vector<std::string> &args = std::vector<std::string>());
+    bool set_auto_low_priority(const std::vector<std::string> &args = std::vector<std::string>());
     bool help(const std::vector<std::string> &args = std::vector<std::string>());
     bool start_mining(const std::vector<std::string> &args);
     bool stop_mining(const std::vector<std::string> &args);

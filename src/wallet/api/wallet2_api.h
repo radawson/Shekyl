@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -70,6 +70,7 @@ struct PendingTransaction
     };
 
     enum Priority {
+        Priority_Default = 0,
         Priority_Low = 1,
         Priority_Medium = 2,
         Priority_High = 3,
@@ -103,13 +104,6 @@ struct UnsignedTransaction
         Status_Ok,
         Status_Error,
         Status_Critical
-    };
-
-    enum Priority {
-        Priority_Low = 1,
-        Priority_Medium = 2,
-        Priority_High = 3,
-        Priority_Last
     };
 
     virtual ~UnsignedTransaction() = 0;
@@ -755,7 +749,7 @@ struct WalletManager
      * \brief  Creates new wallet
      * \param  path           Name of wallet file
      * \param  password       Password of wallet file
-     * \param  language       Language to be used to generate electrum seed memo
+     * \param  language       Language to be used to generate electrum seed mnemonic
      * \return                Wallet instance (Wallet::status() needs to be called to check if created successfully)
      */
     virtual Wallet * createWallet(const std::string &path, const std::string &password, const std::string &language, bool testnet = false) = 0;
@@ -769,16 +763,51 @@ struct WalletManager
     virtual Wallet * openWallet(const std::string &path, const std::string &password, bool testnet = false) = 0;
 
     /*!
-     * \brief  recovers existing wallet using memo (electrum seed)
+     * \brief  recovers existing wallet using mnemonic (electrum seed)
      * \param  path           Name of wallet file to be created
-     * \param  memo           memo (25 words electrum seed)
+     * \param  password       Password of wallet file
+     * \param  mnemonic       mnemonic (25 words electrum seed)
      * \param  testnet        testnet
      * \param  restoreHeight  restore from start height
      * \return                Wallet instance (Wallet::status() needs to be called to check if recovered successfully)
      */
-    virtual Wallet * recoveryWallet(const std::string &path, const std::string &memo, bool testnet = false, uint64_t restoreHeight = 0) = 0;
+    virtual Wallet * recoveryWallet(const std::string &path, const std::string &password, const std::string &mnemonic,
+                                    bool testnet = false, uint64_t restoreHeight = 0) = 0;
+
+    /*!
+     * \deprecated this method creates a wallet WITHOUT a passphrase, use the alternate recoverWallet() method
+     * \brief  recovers existing wallet using mnemonic (electrum seed)
+     * \param  path           Name of wallet file to be created
+     * \param  mnemonic       mnemonic (25 words electrum seed)
+     * \param  testnet        testnet
+     * \param  restoreHeight  restore from start height
+     * \return                Wallet instance (Wallet::status() needs to be called to check if recovered successfully)
+     */
+    virtual Wallet * recoveryWallet(const std::string &path, const std::string &mnemonic, bool testnet = false, uint64_t restoreHeight = 0) = 0;
+
+    /*!
+     * \brief  recovers existing wallet using keys. Creates a view only wallet if spend key is omitted
+     * \param  path           Name of wallet file to be created
+     * \param  password       Password of wallet file
+     * \param  language       language
+     * \param  testnet        testnet
+     * \param  restoreHeight  restore from start height
+     * \param  addressString  public address
+     * \param  viewKeyString  view key
+     * \param  spendKeyString spend key (optional)
+     * \return                Wallet instance (Wallet::status() needs to be called to check if recovered successfully)
+     */
+    virtual Wallet * createWalletFromKeys(const std::string &path,
+                                                    const std::string &password,
+                                                    const std::string &language,
+                                                    bool testnet,
+                                                    uint64_t restoreHeight,
+                                                    const std::string &addressString,
+                                                    const std::string &viewKeyString,
+                                                    const std::string &spendKeyString = "") = 0;
 
    /*!
+    * \deprecated this method creates a wallet WITHOUT a passphrase, use createWalletFromKeys(..., password, ...) instead
     * \brief  recovers existing wallet using keys. Creates a view only wallet if spend key is omitted
     * \param  path           Name of wallet file to be created
     * \param  language       language
