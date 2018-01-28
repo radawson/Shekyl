@@ -77,15 +77,4 @@ namespace tools {
   using scrubbed_arr = scrubbed<std::array<T, N>>;
 } // namespace tools
 
-// Partial specialization for std::is_pod<tools::scrubbed<T>> so that it can
-// pretend to be the containted type in those contexts.
-namespace std
- {
-	template<class t_scrubbee>
-		struct is_pod<tools::scrubbed<t_scrubbee>> {
-		static const bool value = is_pod<t_scrubbee>::value;
-		
-	};
- }
-
 #endif // __cplusplus
