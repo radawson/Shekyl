@@ -34,10 +34,13 @@ if(ANDROID)
   add_definitions("-DANDROID=1")
 endif()
 
+project (lmdb)
 
 set (lmdb_sources
 mdb.c
 midl.c)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
