@@ -243,7 +243,9 @@ Good luck!
 
 # shekyl
 
-Copyright (c) 2014-2017 The shekyl Project.   
+Copyright (c) 2014-2018, The Monero Project
+Copyright (c) 2018, CircleX LLC   
+Portions Copyright (c) 2012-2013 The Cryptonote developers.
 
 ## Development resources
 

@@ -2,7 +2,7 @@
 /// @author rfree (current maintainer in monero.cc project)
 /// @brief This is the place to implement our handlers for protocol network actions, e.g. for ratelimit for download-requests
 
-// Copyright (c) 2014-2018, The Monero Project, CircleX
+//  Copyright (c) 2014-2018, The Monero Project, 2018 CircleX LLC
 // 
 // All rights reserved.
 // 

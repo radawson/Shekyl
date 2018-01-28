@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, CircleX
+//  Copyright (c) 2014-2018, The Monero Project, 2018 CircleX LLC
 //
 // All rights reserved.
 //
@@ -458,6 +458,16 @@ bool WalletImpl::recoverFromKeys(const std::string &path,
                                 const std::string &viewkey_string,
                                 const std::string &spendkey_string)
 {
+    return recoverFromKeysWithPassword(path, "", language, address_string, viewkey_string, spendkey_string);
+}
+
+bool WalletImpl::recoverFromKeysWithPassword(const std::string &path,
+                                 const std::string &password,
+                                 const std::string &language,
+                                 const std::string &address_string,
+                                 const std::string &viewkey_string,
+                                 const std::string &spendkey_string)
+{
     cryptonote::address_parse_info info;
     if(!get_account_address_from_str(info, m_wallet->testnet(), address_string))
     {
@@ -524,12 +534,12 @@ bool WalletImpl::recoverFromKeys(const std::string &path,
     try
     {
         if (has_spendkey) {
-            m_wallet->generate(path, "", info.address, spendkey, viewkey);
+            m_wallet->generate(path, password, info.address, spendkey, viewkey);
             setSeedLanguage(language);
             LOG_PRINT_L1("Generated new wallet from keys with seed language: " + language);
         }
         else {
-            m_wallet->generate(path, "", info.address, viewkey);
+            m_wallet->generate(path, password, info.address, viewkey);
             LOG_PRINT_L1("Generated new view only wallet from keys");
         }
         
@@ -570,6 +580,11 @@ bool WalletImpl::open(const std::string &path, const std::string &password)
 
 bool WalletImpl::recover(const std::string &path, const std::string &seed)
 {
+    return recover(path, "", seed);
+}
+
+bool WalletImpl::recover(const std::string &path, const std::string &password, const std::string &seed)
+{
     clearStatus();
     m_errorString.clear();
     if (seed.empty()) {
@@ -590,7 +605,7 @@ bool WalletImpl::recover(const std::string &path, const std::string &seed)
 
     try {
         m_wallet->set_seed_language(old_language);
-        m_wallet->generate(path, "", recovery_key, true, false);
+        m_wallet->generate(path, password, recovery_key, true, false);
 
     } catch (const std::exception &e) {
         m_status = Status_Critical;
@@ -1059,6 +1074,8 @@ PendingTransaction *WalletImpl::createTransaction(const string &dst_addr, const 
     if (fake_outs_count == 0)
         fake_outs_count = DEFAULT_MIXIN;
 
+    uint32_t adjusted_priority = m_wallet->adjust_priority(static_cast<uint32_t>(priority));
+
     PendingTransactionImpl * transaction = new PendingTransactionImpl(*this);
 
     do {
@@ -1118,7 +1135,7 @@ PendingTransaction *WalletImpl::createTransaction(const string &dst_addr, const 
                 de.is_subaddress = info.is_subaddress;
                 dsts.push_back(de);
                 transaction->m_pending_tx = m_wallet->create_transactions_2(dsts, fake_outs_count, 0 /* unlock_time */,
-                                                                          static_cast<uint32_t>(priority),
+                                                                          adjusted_priority,
                                                                           extra, subaddr_account, subaddr_indices, m_trustedDaemon);
             } else {
                 // for the GUI, sweep_all (i.e. amount set as "(all)") will always sweep all the funds in all the addresses
@@ -1128,7 +1145,7 @@ PendingTransaction *WalletImpl::createTransaction(const string &dst_addr, const 
                         subaddr_indices.insert(index);
                 }
                 transaction->m_pending_tx = m_wallet->create_transactions_all(0, info.address, info.is_subaddress, fake_outs_count, 0 /* unlock_time */,
-                                                                          static_cast<uint32_t>(priority),
+                                                                          adjusted_priority,
                                                                           extra, subaddr_account, subaddr_indices, m_trustedDaemon);
             }
 

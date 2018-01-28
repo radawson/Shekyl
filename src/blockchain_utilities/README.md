@@ -1,6 +1,7 @@
 # Monero Blockchain Utilities
 
-Copyright (c) 2014-2018, The Monero Project, CircleX
+  Copyright (c) 2014-2018, The Monero Project
+  Copyright (c) 2018, CircleX LLC
 
 ## Introduction
 

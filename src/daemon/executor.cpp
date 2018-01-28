@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, CircleX
+//  Copyright (c) 2014-2018, The Monero Project, 2018 CircleX LLC
 // 
 // All rights reserved.
 // 
@@ -40,7 +40,7 @@
 
 namespace daemonize
 {
-  std::string const t_executor::NAME = "Monero Daemon";
+  std::string const t_executor::NAME = CRYPTONOTE_NAME " Daemon";
 
   void t_executor::init_options(
       boost::program_options::options_description & configurable_options

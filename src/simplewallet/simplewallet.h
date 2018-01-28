@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, CircleX
+//  Copyright (c) 2014-2018, The Monero Project, 2018 CircleX LLC
 // 
 // All rights reserved.
 // 
@@ -129,7 +129,9 @@ namespace cryptonote
     bool set_merge_destinations(const std::vector<std::string> &args = std::vector<std::string>());
     bool set_confirm_backlog(const std::vector<std::string> &args = std::vector<std::string>());
     bool set_confirm_backlog_threshold(const std::vector<std::string> &args = std::vector<std::string>());
+    bool set_confirm_export_overwrite(const std::vector<std::string> &args = std::vector<std::string>());
     bool set_refresh_from_block_height(const std::vector<std::string> &args = std::vector<std::string>());
+    bool set_auto_low_priority(const std::vector<std::string> &args = std::vector<std::string>());
     bool help(const std::vector<std::string> &args = std::vector<std::string>());
     bool start_mining(const std::vector<std::string> &args);
     bool stop_mining(const std::vector<std::string> &args);

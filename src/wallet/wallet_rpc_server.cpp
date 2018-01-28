@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, CircleX
+//  Copyright (c) 2014-2018, The Monero Project, 2018 CircleX LLC
 // 
 // All rights reserved.
 // 
@@ -251,7 +251,7 @@ namespace tools
     entry.timestamp = pd.m_timestamp;
     entry.amount = pd.m_amount;
     entry.unlock_time = pd.m_unlock_time;
-    entry.fee = 0; // TODO
+    entry.fee = pd.m_fee;
     entry.note = m_wallet->get_tx_note(pd.m_tx_hash);
     entry.type = "in";
     entry.subaddr_index = pd.m_subaddr_index;
@@ -314,7 +314,7 @@ namespace tools
     entry.timestamp = pd.m_timestamp;
     entry.amount = pd.m_amount;
     entry.unlock_time = pd.m_unlock_time;
-    entry.fee = 0; // TODO
+    entry.fee = pd.m_fee;
     entry.note = m_wallet->get_tx_note(pd.m_tx_hash);
     entry.double_spend_seen = ppd.m_double_spend_seen;
     entry.type = "pool";
@@ -783,7 +783,8 @@ namespace tools
     try
     {
       uint64_t mixin = m_wallet->adjust_mixin(req.mixin);
-      std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_2(dsts, mixin, req.unlock_time, req.priority, extra, req.account_index, req.subaddr_indices, m_trusted_daemon);
+      uint32_t priority = m_wallet->adjust_priority(req.priority);
+      std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_2(dsts, mixin, req.unlock_time, priority, extra, req.account_index, req.subaddr_indices, m_trusted_daemon);
 
       if (ptx_vector.empty())
       {
@@ -834,8 +835,9 @@ namespace tools
     try
     {
       uint64_t mixin = m_wallet->adjust_mixin(req.mixin);
+      uint32_t priority = m_wallet->adjust_priority(req.priority);
       LOG_PRINT_L2("on_transfer_split calling create_transactions_2");
-      std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_2(dsts, mixin, req.unlock_time, req.priority, extra, req.account_index, req.subaddr_indices, m_trusted_daemon);
+      std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_2(dsts, mixin, req.unlock_time, priority, extra, req.account_index, req.subaddr_indices, m_trusted_daemon);
       LOG_PRINT_L2("on_transfer_split called create_transactions_2");
 
       return fill_response(ptx_vector, req.get_tx_keys, res.tx_key_list, res.amount_list, res.fee_list, res.multisig_txset, req.do_not_relay,
@@ -900,7 +902,8 @@ namespace tools
     try
     {
       uint64_t mixin = m_wallet->adjust_mixin(req.mixin);
-      std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_all(req.below_amount, dsts[0].addr, dsts[0].is_subaddress, mixin, req.unlock_time, req.priority, extra, req.account_index, req.subaddr_indices, m_trusted_daemon);
+      uint32_t priority = m_wallet->adjust_priority(req.priority);
+      std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_all(req.below_amount, dsts[0].addr, dsts[0].is_subaddress, mixin, req.unlock_time, priority, extra, req.account_index, req.subaddr_indices, m_trusted_daemon);
 
       return fill_response(ptx_vector, req.get_tx_keys, res.tx_key_list, res.amount_list, res.fee_list, res.multisig_txset, req.do_not_relay,
           res.tx_hash_list, req.get_tx_hex, res.tx_blob_list, req.get_tx_metadata, res.tx_metadata_list, er);
@@ -947,7 +950,8 @@ namespace tools
     try
     {
       uint64_t mixin = m_wallet->adjust_mixin(req.mixin);
-      std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_single(ki, dsts[0].addr, dsts[0].is_subaddress, mixin, req.unlock_time, req.priority, extra, m_trusted_daemon);
+      uint32_t priority = m_wallet->adjust_priority(req.priority);
+      std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_single(ki, dsts[0].addr, dsts[0].is_subaddress, mixin, req.unlock_time, priority, extra, m_trusted_daemon);
 
       if (ptx_vector.empty())
       {
@@ -1315,6 +1319,10 @@ namespace tools
       else if(req.key_type.compare("view_key") == 0)
       {
           res.key = string_tools::pod_to_hex(m_wallet->get_account().get_keys().m_view_secret_key);
+      }
+      else if(req.key_type.compare("spend_key") == 0)
+      {
+          res.key = string_tools::pod_to_hex(m_wallet->get_account().get_keys().m_spend_secret_key);
       }
       else
       {

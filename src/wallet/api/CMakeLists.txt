@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2017, The Monero Project
+# Copyright (c) 2014-2018, The Monero Project
 #
 # All rights reserved.
 #
@@ -88,4 +88,4 @@ else()
 endif()
 
 install(FILES ${wallet_api_headers}
-    DESTINATION include/wallet)
+    DESTINATION include/wallet/api)

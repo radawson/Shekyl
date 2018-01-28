@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project, CircleX
+// Copy ight (c) 2014-2018, The Monero Project, CircleX LLC
 // 
 // All rights reserved.
 // 
