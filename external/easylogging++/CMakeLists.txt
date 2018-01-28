@@ -30,7 +30,7 @@ cmake_minimum_required(VERSION 2.8.7)
 
 project(easylogging CXX)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
 
 find_package(Threads)
 
