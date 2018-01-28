@@ -108,7 +108,8 @@ namespace epee
   template<typename T>
   constexpr bool has_padding() noexcept
   {
-    return !std::is_standard_layout<T>() || alignof(T) != 1;
+	  return !std::is_pod<T>::value || alignof(T) != 1;
+	//  return !std::is_standard_layout<T>() || alignof(T) != 1; // commented out for testing - this should probably be changed
   }
 
   //! \return Cast data from `src` as `span<const std::uint8_t>`.
