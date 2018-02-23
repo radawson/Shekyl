@@ -127,7 +127,8 @@ static const struct {
   { 5, 802660, 0, 1472415036 + 86400*180 }, // add 5 months on testnet to shut the update warning up since there's a large gap to v6
 
   { 6, 971400, 0, 1501709789 },
-  { 7, 1057028, 0, 1512211236 },
+  { 7, 1057027, 0, 1512211236 },
+  { 8, 1057058, 0, 1515967497 },
 };
 static const uint64_t testnet_hard_fork_version_1_till = 624633;
 
@@ -2395,11 +2396,11 @@ bool Blockchain::check_tx_outputs(const transaction& tx, tx_verification_context
     }
   }
 
-  // from v7, allow bulletproofs
-  if (hf_version < 7 || !m_testnet) {
+  // from v8, allow bulletproofs
+  if (hf_version < 8) {
     if (!tx.rct_signatures.p.bulletproofs.empty())
     {
-      MERROR("Bulletproofs are not allowed before v7 or on mainnet");
+      MERROR("Bulletproofs are not allowed before v8");
       tvc.m_invalid_output = true;
       return false;
     }
@@ -3753,6 +3754,10 @@ uint64_t Blockchain::prevalidate_block_hashes(uint64_t height, const std::list<c
   if (height >= m_blocks_hash_of_hashes.size() * HASH_OF_HASHES_STEP)
     return hashes.size();
 
+  // if we're getting old blocks, we might have jettisoned the hashes already
+  if (m_blocks_hash_check.empty())
+    return hashes.size();
+
   // find hashes encompassing those block
   size_t first_index = height / HASH_OF_HASHES_STEP;
   size_t last_index = (height + hashes.size() - 1) / HASH_OF_HASHES_STEP;
@@ -4343,8 +4348,13 @@ void Blockchain::load_compiled_in_block_hashes()
     {
       const unsigned char *p = get_blocks_dat_start(m_testnet);
       const uint32_t nblocks = *p | ((*(p+1))<<8) | ((*(p+2))<<16) | ((*(p+3))<<24);
+      if (nblocks > (std::numeric_limits<uint32_t>::max() - 4) / sizeof(hash))
+      {
+        MERROR("Block hash data is too large");
+        return;
+      }
       const size_t size_needed = 4 + nblocks * sizeof(crypto::hash);
-      if(nblocks > 0 && nblocks * HASH_OF_HASHES_STEP > m_db->height() && get_blocks_dat_size(m_testnet) >= size_needed)
+      if(nblocks > 0 && nblocks > (m_db->height() + HASH_OF_HASHES_STEP - 1) / HASH_OF_HASHES_STEP && get_blocks_dat_size(m_testnet) >= size_needed)
       {
         p += sizeof(uint32_t);
         m_blocks_hash_of_hashes.reserve(nblocks);

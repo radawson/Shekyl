@@ -561,6 +561,9 @@ namespace tools
     void set_refresh_from_block_height(uint64_t height) {m_refresh_from_block_height = height;}
     uint64_t get_refresh_from_block_height() const {return m_refresh_from_block_height;}
 
+    void explicit_refresh_from_block_height(bool expl) {m_explicit_refresh_from_block_height = expl;}
+    bool explicit_refresh_from_block_height() const {return m_explicit_refresh_from_block_height;}
+
     // upper_transaction_size_limit as defined below is set to 
     // approximately 125% of the fixed minimum allowable penalty
     // free block size. TODO: fix this so that it actually takes
@@ -602,6 +605,7 @@ namespace tools
     cryptonote::account_public_address get_subaddress(const cryptonote::subaddress_index& index) const;
     cryptonote::account_public_address get_address() const { return get_subaddress({0,0}); }
     crypto::public_key get_subaddress_spend_public_key(const cryptonote::subaddress_index& index) const;
+    std::vector<crypto::public_key> get_subaddress_spend_public_keys(uint32_t account, uint32_t begin, uint32_t end) const;
     std::string get_subaddress_as_str(const cryptonote::subaddress_index& index) const;
     std::string get_address_as_str() const { return get_subaddress_as_str({0, 0}); }
     std::string get_integrated_address_as_str(const crypto::hash8& payment_id) const;
@@ -779,7 +783,8 @@ namespace tools
       if (ver < 20)
         return;
       a & m_subaddresses;
-      a & m_subaddresses_inv;
+      std::unordered_map<cryptonote::subaddress_index, crypto::public_key> dummy_subaddresses_inv;
+      a & dummy_subaddresses_inv;
       a & m_subaddress_labels;
       a & m_additional_tx_keys;
       if(ver < 21)
@@ -1086,7 +1091,6 @@ namespace tools
     std::unordered_map<crypto::public_key, size_t> m_pub_keys;
     cryptonote::account_public_address m_account_public_address;
     std::unordered_map<crypto::public_key, cryptonote::subaddress_index> m_subaddresses;
-    std::unordered_map<cryptonote::subaddress_index, crypto::public_key> m_subaddresses_inv;
     std::vector<std::vector<std::string>> m_subaddress_labels;
     std::unordered_map<crypto::hash, std::string> m_tx_notes;
     std::unordered_map<std::string, std::string> m_attributes;
@@ -1117,6 +1121,9 @@ namespace tools
     RefreshType m_refresh_type;
     bool m_auto_refresh;
     uint64_t m_refresh_from_block_height;
+    // If m_refresh_from_block_height is explicitly set to zero we need this to differentiate it from the case that
+    // m_refresh_from_block_height was defaulted to zero.*/
+    bool m_explicit_refresh_from_block_height;
     bool m_confirm_missing_payment_id;
     bool m_ask_password;
     uint32_t m_min_output_count;
