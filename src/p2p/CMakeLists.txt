@@ -47,6 +47,5 @@ target_link_libraries(p2p
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
     ${Boost_THREAD_LIBRARY}
-    ${Boost_SERIALIZATION_LIBRARY}
   PRIVATE
     ${EXTRA_LIBRARIES})

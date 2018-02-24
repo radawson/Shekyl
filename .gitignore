@@ -105,3 +105,8 @@ local.properties
 .idea/
 
 /testnet
+cmake/FindReadline.cmake
+contrib/epee/include/storages/levin_abstract_invoke2.h
+contrib/epee/include/storages/portable_storage_val_converters.h
+contrib/epee/src/CMakeLists.txt
+contrib/epee/include/storages/portable_storage_val_converters.h

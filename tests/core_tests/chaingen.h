@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project
+// Copy ight (c) 2014-2018, The Monero Project, CircleX LLC
 // 
 // All rights reserved.
 // 
@@ -52,8 +52,8 @@
 #include "cryptonote_basic/cryptonote_boost_serialization.h"
 #include "misc_language.h"
 
-#undef MONERO_DEFAULT_LOG_CATEGORY
-#define MONERO_DEFAULT_LOG_CATEGORY "tests.core"
+#undef CRYPTOCOIN_DEFAULT_LOG_CATEGORY
+#define CRYPTOCOIN_DEFAULT_LOG_CATEGORY "tests.core"
 
 
 

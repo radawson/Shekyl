@@ -33,7 +33,7 @@ if (USE_READLINE AND GNU_READLINE_FOUND)
 endif()
 
 if(HAVE_C11)
-SET_PROPERTY(SOURCE memwipe.c PROPERTY COMPILE_FLAGS -std=c11)
+  SET_PROPERTY(SOURCE memwipe.c PROPERTY COMPILE_FLAGS -std=c11)
 endif()
 
 # Build and install libepee if we're building for GUI
@@ -53,6 +53,7 @@ endif()
 
 target_link_libraries(epee
   PUBLIC
+    cncrypto
     easylogging
     ${Boost_FILESYSTEM_LIBRARY}
   PRIVATE

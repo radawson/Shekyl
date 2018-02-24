@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project
+//  Copyright (c) 2014-2018, The Monero Project, 2018 CircleX LLC
 // 
 // All rights reserved.
 // 
@@ -39,8 +39,8 @@
 #include <ctime>
 #include <string>
 
-#undef MONERO_DEFAULT_LOG_CATEGORY
-#define MONERO_DEFAULT_LOG_CATEGORY "daemon"
+#undef CRYPTOCOIN_DEFAULT_LOG_CATEGORY
+#define CRYPTOCOIN_DEFAULT_LOG_CATEGORY "daemon"
 
 namespace daemonize {
 
@@ -1144,10 +1144,10 @@ bool t_rpc_command_executor::print_status()
   bool daemon_is_alive = m_rpc_client->check_connection();
 
   if(daemon_is_alive) {
-    tools::success_msg_writer() << "monerod is running";
+    tools::success_msg_writer() << "shekyld is running";
   }
   else {
-    tools::fail_msg_writer() << "monerod is NOT running";
+    tools::fail_msg_writer() << "shekyld is NOT running";
   }
 
   return true;

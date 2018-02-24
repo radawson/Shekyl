@@ -1,4 +1,4 @@
-//  Copyright (c) 2014-2018, The Monero Project, 2018 CircleX LLC
+// Copyright (c) 2017, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -25,75 +25,60 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
+// 
 // Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
 
 #pragma once
 
-#include "cryptonote_protocol/cryptonote_protocol_handler.h"
-#include "p2p/net_node.h"
-#include "daemon/protocol.h"
+#ifdef __cplusplus
+#include <array>
 
-#undef CRYPTOCOIN_DEFAULT_LOG_CATEGORY
-#define CRYPTOCOIN_DEFAULT_LOG_CATEGORY "daemon"
+extern "C" {
+#endif
 
-namespace daemonize
-{
+void *memwipe(void *src, size_t n);
 
-class t_p2p final
-{
-private:
-  typedef cryptonote::t_cryptonote_protocol_handler<cryptonote::core> t_protocol_raw;
-  typedef nodetool::node_server<t_protocol_raw> t_node_server;
-public:
-  static void init_options(boost::program_options::options_description & option_spec)
-  {
-    t_node_server::init_options(option_spec);
-  }
-private:
-  t_node_server m_server;
-public:
-  t_p2p(
-      boost::program_options::variables_map const & vm
-    , t_protocol & protocol
-    )
-    : m_server{protocol.get()}
-  {
-    //initialize objects
-    MGINFO("Initializing p2p server...");
-    if (!m_server.init(vm))
-    {
-      throw std::runtime_error("Failed to initialize p2p server.");
-    }
-    MGINFO("P2p server initialized OK");
-  }
-
-  t_node_server & get()
-  {
-    return m_server;
-  }
-
-  void run()
-  {
-    MGINFO("Starting p2p net loop...");
-    m_server.run();
-    MGINFO("p2p net loop stopped");
-  }
-
-  void stop()
-  {
-    m_server.send_stop_signal();
-  }
-
-  ~t_p2p()
-  {
-    MGINFO("Deinitializing p2p...");
-    try {
-      m_server.deinit();
-    } catch (...) {
-      MERROR("Failed to deinitialize p2p...");
-    }
-  }
-};
-
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+namespace tools {
+
+  /// Scrubs data in the contained type upon destruction.
+  ///
+  /// Primarily useful for making sure that private keys don't stick around in
+  /// memory after the objects that held them have gone out of scope.
+  template <class T>
+  struct scrubbed : public T {
+    using type = T;
+
+    ~scrubbed() {
+      scrub();
+    }
+
+    /// Destroy the contents of the contained type.
+    void scrub() {
+      static_assert(std::is_pod<T>::value,
+                    "T cannot be auto-scrubbed. T must be POD.");
+      static_assert(std::is_trivially_destructible<T>::value,
+                    "T cannot be auto-scrubbed. T must be trivially destructable.");
+      memwipe(this, sizeof(T));
+    }
+  };
+
+  template <class T, size_t N>
+  using scrubbed_arr = scrubbed<std::array<T, N>>;
+} // namespace tools
+
+// Partial specialization for std::is_pod<tools::scrubbed<T>> so that it can
+// pretend to be the containted type in those contexts.
+namespace std
+{
+  template<class t_scrubbee>
+  struct is_pod<tools::scrubbed<t_scrubbee>> {
+    static const bool value = is_pod<t_scrubbee>::value;
+  };
+}
+
+#endif // __cplusplus

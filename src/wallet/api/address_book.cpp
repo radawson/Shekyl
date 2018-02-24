@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018, The Monero Project
+//  Copyright (c) 2014-2018, The Monero Project, 2018 CircleX LLC
 //
 // All rights reserved.
 //
@@ -30,6 +30,7 @@
 
 
 #include "address_book.h"
+#include "cryptonote_config.h"
 #include "wallet.h"
 #include "crypto/hash.h"
 #include "wallet/wallet2.h"
@@ -37,7 +38,7 @@
 
 #include <vector>
 
-namespace Monero {
+namespace CryptoCoin {
   
 AddressBook::~AddressBook() {}
   
@@ -178,4 +179,4 @@ AddressBookImpl::~AddressBookImpl()
 
 } // namespace
 
-namespace Bitmonero = Monero;
+namespace Bitmonero = CryptoCoin;

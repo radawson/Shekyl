@@ -66,6 +66,7 @@
 #include <tuple>
 #include <type_traits>
 
+#include "crypto/crypto.h"
 #include "hex.h"
 #include "md5_l.h"
 #include "string_coding.h"
@@ -93,7 +94,7 @@ namespace
 
   constexpr const auto client_auth_field = ceref(u8"Authorization");
   constexpr const auto server_auth_field = ceref(u8"WWW-authenticate");
-  constexpr const auto auth_realm = ceref(u8"monero-rpc");
+  constexpr const auto auth_realm = ceref(u8"shekyl-rpc");
   constexpr const char comma = 44;
   constexpr const char equal_sign = 61;
   constexpr const char quote = 34;
@@ -673,7 +674,7 @@ namespace
         const auto algorithm = boost::range::join(
           Digest::name, (i == 0 ? boost::string_ref{} : sess_algo)
         );
-        add_field(out, u8"algorithm", algorithm);
+        add_field(out, u8"algorithm", quoted(algorithm));
         add_field(out, u8"realm", quoted(auth_realm));
         add_field(out, u8"nonce", quoted(nonce));
         add_field(out, u8"stale", is_stale ? ceref("true") : ceref("false"));
@@ -710,8 +711,8 @@ namespace epee
   {
     namespace http
     {
-      http_server_auth::http_server_auth(login credentials, std::function<void(size_t, uint8_t*)> r)
-        : user(session{std::move(credentials)}), rng(std::move(r)) {
+      http_server_auth::http_server_auth(login credentials)
+        : user(session{std::move(credentials)}) {
       }
 
       boost::optional<http_response_info> http_server_auth::do_get_response(const http_request_info& request)
@@ -745,7 +746,7 @@ namespace epee
         user->counter = 0;
         {
           std::array<std::uint8_t, 16> rand_128bit{{}};
-          rng(rand_128bit.size(), rand_128bit.data());
+          crypto::rand(rand_128bit.size(), rand_128bit.data());
           user->nonce = string_encoding::base64_encode(rand_128bit.data(), rand_128bit.size());
         }
         return create_digest_response(user->nonce, is_stale);

@@ -1,4 +1,5 @@
-// Copyright (c) 2014-2018, The Monero Project
+//  Copyright (c) 2014-2018, The Monero Project
+//  Copyright (c) 2018, CircleX LLC
 //
 // All rights reserved.
 //
@@ -34,7 +35,7 @@ using namespace epee;
 #include "cryptonote_basic_impl.h"
 #include "string_tools.h"
 #include "serialization/binary_utils.h"
-#include "serialization/container.h"
+#include "serialization/vector.h"
 #include "cryptonote_format_utils.h"
 #include "cryptonote_config.h"
 #include "misc_language.h"
@@ -43,8 +44,8 @@ using namespace epee;
 #include "common/int-util.h"
 #include "common/dns_utils.h"
 
-#undef MONERO_DEFAULT_LOG_CATEGORY
-#define MONERO_DEFAULT_LOG_CATEGORY "cn"
+#undef CRYPTOCOIN_DEFAULT_LOG_CATEGORY
+#define CRYPTOCOIN_DEFAULT_LOG_CATEGORY "cn"
 
 namespace cryptonote {
 

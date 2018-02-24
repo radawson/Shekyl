@@ -1,4 +1,5 @@
 # Copyright (c) 2014-2018, The Monero Project
+# Copyright (c) 2018, CircleX LLC
 # 
 # All rights reserved.
 # 
@@ -26,6 +27,8 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+
 if(FREEBSD)
   add_definitions(-DMDB_DSYNC=O_SYNC)
 endif()
@@ -34,6 +37,7 @@ if(ANDROID)
   add_definitions("-DANDROID=1")
 endif()
 
+project (lmdb)
 
 set (lmdb_sources
 mdb.c
@@ -50,4 +54,3 @@ if(${ARCH_WIDTH} EQUAL 32)
   target_compile_definitions(lmdb
     PUBLIC -DMDB_VL32)
 endif()
-set_property(TARGET lmdb APPEND PROPERTY COMPILE_FLAGS "-fPIC")
