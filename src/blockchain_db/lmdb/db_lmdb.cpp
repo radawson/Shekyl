@@ -339,6 +339,12 @@ mdb_txn_safe::~mdb_txn_safe()
   num_active_txns--;
 }
 
+void mdb_txn_safe::uncheck()
+{
+  num_active_txns--;
+  m_check = false;
+}
+
 void mdb_txn_safe::commit(std::string message)
 {
   if (message.size() == 0)
@@ -446,7 +452,8 @@ void BlockchainLMDB::do_resize(uint64_t increase_size)
     boost::filesystem::space_info si = boost::filesystem::space(path);
     if(si.available < add_size)
     {
-      MERROR("!! WARNING: Insufficient free space to extend database !!: " << si.available / 1LL << 20L);
+      MERROR("!! WARNING: Insufficient free space to extend database !!: " <<
+          (si.available >> 20L) << " MB available, " << (add_size >> 20L) << " MB needed");
       return;
     }
   }
@@ -467,7 +474,7 @@ void BlockchainLMDB::do_resize(uint64_t increase_size)
   // add 1Gb per resize, instead of doing a percentage increase
   uint64_t new_mapsize = (double) mei.me_mapsize + add_size;
 
-  // If given, use increase_size intead of above way of resizing.
+  // If given, use increase_size instead of above way of resizing.
   // This is currently used for increasing by an estimated size at start of new
   // batch txn.
   if (increase_size > 0)
@@ -1075,13 +1082,12 @@ BlockchainLMDB::~BlockchainLMDB()
     close();
 }
 
-BlockchainLMDB::BlockchainLMDB(bool batch_transactions)
+BlockchainLMDB::BlockchainLMDB(bool batch_transactions): BlockchainDB()
 {
   LOG_PRINT_L3("BlockchainLMDB::" << __func__);
   // initialize folder to something "safe" just in case
   // someone accidentally misuses this class...
   m_folder = "thishsouldnotexistbecauseitisgibberish";
-  m_open = false;
 
   m_batch_transactions = batch_transactions;
   m_write_txn = nullptr;
@@ -1440,9 +1446,10 @@ void BlockchainLMDB::unlock()
 #define TXN_PREFIX_RDONLY() \
   MDB_txn *m_txn; \
   mdb_txn_cursors *m_cursors; \
+  mdb_txn_safe auto_txn; \
   bool my_rtxn = block_rtxn_start(&m_txn, &m_cursors); \
-  mdb_txn_safe auto_txn(my_rtxn); \
-  if (my_rtxn) auto_txn.m_tinfo = m_tinfo.get()
+  if (my_rtxn) auto_txn.m_tinfo = m_tinfo.get(); \
+  else auto_txn.uncheck()
 #define TXN_POSTFIX_RDONLY()
 
 #define TXN_POSTFIX_SUCCESS() \
@@ -2433,7 +2440,7 @@ bool BlockchainLMDB::for_all_key_images(std::function<bool(const crypto::key_ima
   RCURSOR(spent_keys);
 
   MDB_val k, v;
-  bool ret = true;
+  bool fret = true;
 
   k = zerokval;
   MDB_cursor_op op = MDB_FIRST;
@@ -2447,14 +2454,14 @@ bool BlockchainLMDB::for_all_key_images(std::function<bool(const crypto::key_ima
       throw0(DB_ERROR("Failed to enumerate key images"));
     const crypto::key_image k_image = *(const crypto::key_image*)v.mv_data;
     if (!f(k_image)) {
-      ret = false;
+      fret = false;
       break;
     }
   }
 
   TXN_POSTFIX_RDONLY();
 
-  return ret;
+  return fret;
 }
 
 bool BlockchainLMDB::for_blocks_range(const uint64_t& h1, const uint64_t& h2, std::function<bool(uint64_t, const crypto::hash&, const cryptonote::block&)> f) const
@@ -2467,7 +2474,7 @@ bool BlockchainLMDB::for_blocks_range(const uint64_t& h1, const uint64_t& h2, st
 
   MDB_val k;
   MDB_val v;
-  bool ret = true;
+  bool fret = true;
 
   MDB_cursor_op op;
   if (h1)
@@ -2496,7 +2503,7 @@ bool BlockchainLMDB::for_blocks_range(const uint64_t& h1, const uint64_t& h2, st
     if (!get_block_hash(b, hash))
         throw0(DB_ERROR("Failed to get block hash from blob retrieved from the db"));
     if (!f(height, hash, b)) {
-      ret = false;
+      fret = false;
       break;
     }
     if (height >= h2)
@@ -2505,7 +2512,7 @@ bool BlockchainLMDB::for_blocks_range(const uint64_t& h1, const uint64_t& h2, st
 
   TXN_POSTFIX_RDONLY();
 
-  return ret;
+  return fret;
 }
 
 bool BlockchainLMDB::for_all_transactions(std::function<bool(const crypto::hash&, const cryptonote::transaction&)> f) const
@@ -2519,7 +2526,7 @@ bool BlockchainLMDB::for_all_transactions(std::function<bool(const crypto::hash&
 
   MDB_val k;
   MDB_val v;
-  bool ret = true;
+  bool fret = true;
 
   MDB_cursor_op op = MDB_FIRST;
   while (1)
@@ -2546,17 +2553,17 @@ bool BlockchainLMDB::for_all_transactions(std::function<bool(const crypto::hash&
     if (!parse_and_validate_tx_from_blob(bd, tx))
       throw0(DB_ERROR("Failed to parse tx from blob retrieved from the db"));
     if (!f(hash, tx)) {
-      ret = false;
+      fret = false;
       break;
     }
   }
 
   TXN_POSTFIX_RDONLY();
 
-  return ret;
+  return fret;
 }
 
-bool BlockchainLMDB::for_all_outputs(std::function<bool(uint64_t amount, const crypto::hash &tx_hash, size_t tx_idx)> f) const
+bool BlockchainLMDB::for_all_outputs(std::function<bool(uint64_t amount, const crypto::hash &tx_hash, uint64_t height, size_t tx_idx)> f) const
 {
   LOG_PRINT_L3("BlockchainLMDB::" << __func__);
   check_open();
@@ -2566,7 +2573,7 @@ bool BlockchainLMDB::for_all_outputs(std::function<bool(uint64_t amount, const c
 
   MDB_val k;
   MDB_val v;
-  bool ret = true;
+  bool fret = true;
 
   MDB_cursor_op op = MDB_FIRST;
   while (1)
@@ -2580,15 +2587,55 @@ bool BlockchainLMDB::for_all_outputs(std::function<bool(uint64_t amount, const c
     uint64_t amount = *(const uint64_t*)k.mv_data;
     outkey *ok = (outkey *)v.mv_data;
     tx_out_index toi = get_output_tx_and_index_from_global(ok->output_id);
-    if (!f(amount, toi.first, toi.second)) {
-      ret = false;
+    if (!f(amount, toi.first, ok->data.height, toi.second)) {
+      fret = false;
       break;
     }
   }
 
   TXN_POSTFIX_RDONLY();
 
-  return ret;
+  return fret;
+}
+
+bool BlockchainLMDB::for_all_outputs(uint64_t amount, const std::function<bool(uint64_t height)> &f) const
+{
+  LOG_PRINT_L3("BlockchainLMDB::" << __func__);
+  check_open();
+
+  TXN_PREFIX_RDONLY();
+  RCURSOR(output_amounts);
+
+  MDB_val_set(k, amount);
+  MDB_val v;
+  bool fret = true;
+
+  MDB_cursor_op op = MDB_SET;
+  while (1)
+  {
+    int ret = mdb_cursor_get(m_cur_output_amounts, &k, &v, op);
+    op = MDB_NEXT_DUP;
+    if (ret == MDB_NOTFOUND)
+      break;
+    if (ret)
+      throw0(DB_ERROR("Failed to enumerate outputs"));
+    uint64_t out_amount = *(const uint64_t*)k.mv_data;
+    if (amount != out_amount)
+    {
+      MERROR("Amount is not the expected amount");
+      fret = false;
+      break;
+    }
+    const outkey *ok = (const outkey *)v.mv_data;
+    if (!f(ok->data.height)) {
+      fret = false;
+      break;
+    }
+  }
+
+  TXN_POSTFIX_RDONLY();
+
+  return fret;
 }
 
 // batch_num_blocks: (optional) Used to check if resize needed before batch transaction starts.
@@ -3139,8 +3186,12 @@ void BlockchainLMDB::drop_hard_fork_info()
 
   TXN_PREFIX(0);
 
-  mdb_drop(*txn_ptr, m_hf_starting_heights, 1);
-  mdb_drop(*txn_ptr, m_hf_versions, 1);
+  auto result = mdb_drop(*txn_ptr, m_hf_starting_heights, 1);
+  if (result)
+    throw1(DB_ERROR(lmdb_error("Error dropping hard fork starting heights db: ", result).c_str()));
+  result = mdb_drop(*txn_ptr, m_hf_versions, 1);
+  if (result)
+    throw1(DB_ERROR(lmdb_error("Error dropping hard fork versions db: ", result).c_str()));
 
   TXN_POSTFIX_SUCCESS();
 }

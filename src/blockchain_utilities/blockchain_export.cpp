@@ -59,8 +59,6 @@ int main(int argc, char* argv[])
 
   tools::on_startup();
 
-  boost::filesystem::path default_data_path {tools::get_default_data_dir()};
-  boost::filesystem::path default_testnet_data_path {default_data_path / "testnet"};
   boost::filesystem::path output_file_path;
 
   po::options_description desc_cmd_only("Command line options");
@@ -74,10 +72,10 @@ int main(int argc, char* argv[])
   const command_line::arg_descriptor<bool> arg_blocks_dat = {"blocksdat", "Output in blocks.dat format", blocks_dat};
 
 
-  command_line::add_arg(desc_cmd_sett, cryptonote::arg_data_dir, default_data_path.string());
-  command_line::add_arg(desc_cmd_sett, cryptonote::arg_testnet_data_dir, default_testnet_data_path.string());
+  command_line::add_arg(desc_cmd_sett, cryptonote::arg_data_dir);
   command_line::add_arg(desc_cmd_sett, arg_output_file);
   command_line::add_arg(desc_cmd_sett, cryptonote::arg_testnet_on);
+  command_line::add_arg(desc_cmd_sett, cryptonote::arg_stagenet_on);
   command_line::add_arg(desc_cmd_sett, arg_log_level);
   command_line::add_arg(desc_cmd_sett, arg_database);
   command_line::add_arg(desc_cmd_sett, arg_block_stop);
@@ -115,12 +113,17 @@ int main(int argc, char* argv[])
   LOG_PRINT_L0("Starting...");
 
   bool opt_testnet = command_line::get_arg(vm, cryptonote::arg_testnet_on);
+  bool opt_stagenet = command_line::get_arg(vm, cryptonote::arg_stagenet_on);
+  if (opt_testnet && opt_stagenet)
+  {
+    std::cerr << "Can't specify more than one of --testnet and --stagenet" << std::endl;
+    return 1;
+  }
   bool opt_blocks_dat = command_line::get_arg(vm, arg_blocks_dat);
 
   std::string m_config_folder;
 
-  auto data_dir_arg = opt_testnet ? cryptonote::arg_testnet_data_dir : cryptonote::arg_data_dir;
-  m_config_folder = command_line::get_arg(vm, data_dir_arg);
+  m_config_folder = command_line::get_arg(vm, cryptonote::arg_data_dir);
 
   std::string db_type = command_line::get_arg(vm, arg_database);
   if (!cryptonote::blockchain_valid_db_type(db_type))
@@ -173,7 +176,7 @@ int main(int argc, char* argv[])
     LOG_PRINT_L0("Error opening database: " << e.what());
     return 1;
   }
-  r = core_storage->init(db, opt_testnet);
+  r = core_storage->init(db, opt_testnet ? cryptonote::TESTNET : opt_stagenet ? cryptonote::STAGENET : cryptonote::MAINNET);
 
   CHECK_AND_ASSERT_MES(r, 1, "Failed to initialize source blockchain storage");
   LOG_PRINT_L0("Source blockchain storage initialized OK");
